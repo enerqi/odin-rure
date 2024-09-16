@@ -1,0 +1,5 @@
+* text=auto
+
+# These files must always have *nix line-endings
+Makefile text eol=lf
+*.sh text eol=lf
