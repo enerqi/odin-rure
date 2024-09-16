@@ -15,12 +15,12 @@ when ODIN_OS == .Windows {
 	// Note the regex-capi examples have a comment about linking:
 	// 	If you're using librure.a, then you'll need to link other stuff:
 	//  -lutil -ldl -lpthread -lgcc_s -lc -lm -lrt -lutil -lrure
-	when !#exists("lib/rure.a") {
+	when !#exists("lib/librure.a") {
 		#panic(
 			"Cannot find compiled rure libraries. `cargo build -- release` rust regex project. Must statically link against -lutil -ldl -lpthread -lgcc_s -lc -lm -lrt -lutil",
 		)
 	}
-	foreign import rure {"lib/rure.a", "system:util", "system:dl", "system:pthread", "system:gcc_s", "system:c", "system:m", "system:rt"}
+	foreign import rure {"lib/librure.a", "system:util", "system:dl", "system:pthread", "system:gcc_s", "system:c", "system:m", "system:rt"}
 } else {
 	#panic("TODO: Unknown or Untested OS.")
 }
