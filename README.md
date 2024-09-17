@@ -8,6 +8,14 @@
 	semantics generally correspond to Perl's, or "leftmost first." Namely, the match locations reported correspond to
 	the first match that would be found by a backtracking engine."
 
+## Why?
+
+Rust regex is one of the [fastest regex libraries](https://github.com/rust-leipzig/regex-performance/blob/master/results_20221012.png) judging by many independent benchmarks.
+Compared to the new Odin [text/regex](https://pkg.odin-lang.org/core/text/regex/) package it was 15x faster for a
+particular use case. The API is small, easy to use and easy to create bindings for. Additionally it's easy to (re)build
+the static libraries with the Rust `cargo` tooling, something that is often not true of larger CMAKE projects, even
+with tools like `vcpkg`.
+
 ## Version
 
 - `rure = "0.2.2"` which provides the C interface to Rust `regex = 1.*`
