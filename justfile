@@ -1,5 +1,8 @@
 set windows-shell := ["nu", "-c"]
+set shell := ["bash", "-c"]
 set unstable  # [script("python")] feature - https://github.com/casey/just/issues/1479
+
+main_name := "example.exe"
 
 # odinfmt every odin file under this directory or subdirectories
 [script("python")]
@@ -18,6 +21,15 @@ lint *args:
 
 
 # ensure the build artifacts top level directory exists
+[unix]
+@mktarget_dirs:
+    -mkdir -p target
+    -mkdir -p target/debug
+    -mkdir -p target/fastdebug
+    -mkdir -p target/release
+
+# ensure the build artifacts top level directory exists
+[windows]
 @mktarget_dirs:
     -mkdir target
     -mkdir target/debug
@@ -26,15 +38,15 @@ lint *args:
 
 
 run_debug *args: mktarget_dirs
-	odin run example -debug -microarch:native -show-timings -out:target/debug/main.exe {{args}}
+	odin run example -debug -microarch:native -show-timings -out:target/debug/{{main_name}} {{args}}
 
 alias run := run_debug
 
 run_fastdebug *args: mktarget_dirs
-    odin run example -debug -o:speed -microarch:native -show-timings -out:target/fastdebug/main.exe {{args}}
+    odin run example -debug -o:speed -microarch:native -show-timings -out:target/fastdebug/{{main_name}} {{args}}
 
 run_release *args: mktarget_dirs
-    odin run example -o:speed -microarch:native -show-timings -out:target/release/main.exe {{args}}
+    odin run example -o:speed -microarch:native -show-timings -out:target/release/{{main_name}} {{args}}
 
 # run all tests
 test *args: mktarget_dirs

@@ -12,6 +12,10 @@
 
 - `rure = "0.2.2"` which provides the C interface to Rust `regex = 1.*`
 
+Prebuilt static `rure` libraries built against Rust regex version:
+
+`1.10.6`
+
 ## API structure
 
 - symbols named `rure_something` in the C API are presented as `rure.something` in the bindings
@@ -26,14 +30,16 @@
 match items properly). Rust regex is [clear that `UTF-8` is the only supported format for unicode](https://github.com/rust-lang/regex/tree/master/regex-capi#text-encoding) - you must translate
 other unicode formats such as `UTF-16` or `UTF-32`.
 
-## Building the `rure` library (optional on Windows)
+## Building the `rure` library (maybe optional)
 
-- The static library `rure.lib` for Windows is shipped with the bindings in `./lib`
-- standard rust tooling can build the library on any platform
+- The static library `rure.lib` for Windows is shipped [with the bindings in `./lib`]
+- The static library `librure.a` for Linux is shipped with the bindings in `./lib`
+- standard rust tooling can (re)build the library on any platform if the prebuilt libraries are not suitable
 	- `git clone https://github.com/rust-lang/regex.git`
 	- `cd regex/regex-capi`
 	- `cargo build --release`
 	- See artifacts in `../target/release`, e.g. `rure.lib` on Windows and `librure.a` on Linux
+	- Copy artifacts to ``./lib`
 
 ## native static library dependencies
 
@@ -50,4 +56,4 @@ Windows:
 
 Linux using `librure.a`:
 
-	-lutil -ldl -lpthread -lgcc_s -lc -lm -lrt -lutil -lrure
+	-lgcc_s -lutil -lrt -lpthread -lm -ldl -lc

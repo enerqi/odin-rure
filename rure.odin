@@ -11,16 +11,19 @@ when ODIN_OS == .Windows {
 	// note: native-static-libs: legacy_stdio_definitions.lib kernel32.lib advapi32.lib ntdll.lib userenv.lib ws2_32.lib kernel32.lib /defaultlib:msvcrt
 	foreign import rure {"lib/rure.lib", "system:legacy_stdio_definitions.lib", "system:advapi32.lib", "system:ntdll.lib", "system:userenv.lib", "system:ws2_32.lib"} // rure.lib is shipped with these bindings. See also -print-linker-flags, -extra-linker-flags, @extra_linker_flags
 
-} else when ODIN_OS in {.Linux, .FreeBSD, .OpenBSD, .Darwin, .NetBSD} {
-	// Note the regex-capi examples have a comment about linking:
-	// 	If you're using librure.a, then you'll need to link other stuff:
-	//  -lutil -ldl -lpthread -lgcc_s -lc -lm -lrt -lutil -lrure
+} else when ODIN_OS == .Linux || ODIN_OS == .FreeBSD || ODIN_OS == .OpenBSD || ODIN_OS == .Darwin || ODIN_OS == .NetBSD {
+	// cargo rustc -q -- --print=native-static-libs
+	// note: Link against the following native artifacts when linking against this static library. The order and any
+	// duplication can be significant on some platforms.
+	//
+	// note: native-static-libs: -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc
 	when !#exists("lib/librure.a") {
 		#panic(
-			"Cannot find compiled rure libraries. `cargo build -- release` rust regex project. Must statically link against -lutil -ldl -lpthread -lgcc_s -lc -lm -lrt -lutil",
+			"Cannot find compiled rure library ./lib/librure.a. 'cargo build -- release' rust regex project (see README.md). " +
+			"Note will statically link against -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc"
 		)
 	}
-	foreign import rure {"lib/librure.a", "system:util", "system:dl", "system:pthread", "system:gcc_s", "system:c", "system:m", "system:rt"}
+	foreign import rure {"lib/librure.a", "system:gcc_s", "system:util", "system:rt", "system:pthread", "system:m", "system:dl", "system:c"}
 } else {
 	#panic("TODO: Unknown or Untested OS.")
 }
