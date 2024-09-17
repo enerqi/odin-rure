@@ -8,7 +8,7 @@
 	semantics generally correspond to Perl's, or "leftmost first." Namely, the match locations reported correspond to
 	the first match that would be found by a backtracking engine."
 
-## version
+## Version
 
 - `rure = "0.2.2"` which provides the C interface to Rust `regex = 1.*`
 
@@ -32,7 +32,7 @@ other unicode formats such as `UTF-16` or `UTF-32`.
 
 ## Building the `rure` library (maybe optional)
 
-- The static library `rure.lib` for Windows is shipped [with the bindings in `./lib`]
+- The static library `rure.lib` for Windows is shipped with the bindings in `./lib`
 - The static library `librure.a` for Linux is shipped with the bindings in `./lib`
 - standard rust tooling can (re)build the library on any platform if the prebuilt libraries are not suitable
 	- `git clone https://github.com/rust-lang/regex.git`
@@ -41,7 +41,7 @@ other unicode formats such as `UTF-16` or `UTF-32`.
 	- See artifacts in `../target/release`, e.g. `rure.lib` on Windows and `librure.a` on Linux
 	- Copy artifacts to ``./lib`
 
-## native static library dependencies
+## Static library dependencies
 
 When building the rust regex C API we can check extra static libraries that must be linked. These are included in the
 Odin `foreign` definition for `rure`. You will get errors if they cannot be found on the system.
