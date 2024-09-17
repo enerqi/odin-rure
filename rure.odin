@@ -11,7 +11,8 @@ when ODIN_OS == .Windows {
 	// note: native-static-libs: legacy_stdio_definitions.lib kernel32.lib advapi32.lib ntdll.lib userenv.lib ws2_32.lib kernel32.lib /defaultlib:msvcrt
 	foreign import rure {"lib/rure.lib", "system:legacy_stdio_definitions.lib", "system:advapi32.lib", "system:ntdll.lib", "system:userenv.lib", "system:ws2_32.lib"} // rure.lib is shipped with these bindings. See also -print-linker-flags, -extra-linker-flags, @extra_linker_flags
 
-} else when ODIN_OS == .Linux || ODIN_OS == .FreeBSD || ODIN_OS == .OpenBSD || ODIN_OS == .Darwin || ODIN_OS == .NetBSD {
+} else when ODIN_OS ==
+	.Linux || ODIN_OS == .FreeBSD || ODIN_OS == .OpenBSD || ODIN_OS == .Darwin || ODIN_OS == .NetBSD {
 	// cargo rustc -q -- --print=native-static-libs
 	// note: Link against the following native artifacts when linking against this static library. The order and any
 	// duplication can be significant on some platforms.
@@ -20,7 +21,7 @@ when ODIN_OS == .Windows {
 	when !#exists("lib/librure.a") {
 		#panic(
 			"Cannot find compiled rure library ./lib/librure.a. 'cargo build -- release' rust regex project (see README.md). " +
-			"Note will statically link against -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc"
+			"Note will statically link against -lgcc_s -lutil -lrt -lpthread -lm -ldl -lc",
 		)
 	}
 	foreign import rure {"lib/librure.a", "system:gcc_s", "system:util", "system:rt", "system:pthread", "system:m", "system:dl", "system:c"}
