@@ -58,7 +58,7 @@ The input C source header file is [inputs/rure.h](./inputs/rure.h) and any custo
 	- `cd regex/regex-capi`
 	- `cargo build --release`
 	- See artifacts in `../target/release`, e.g. `rure.lib` on Windows and `librure.a` on Linux
-	- Copy artifacts to ``./lib`
+	- Copy artifacts to `./lib`
 
 ### Static library dependencies
 
