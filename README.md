@@ -2,18 +2,18 @@
 
 [Odin](http://odin-lang.org/) bindings for the [rust regex](https://github.com/rust-lang/regex) [C API](https://github.com/rust-lang/regex/tree/master/regex-capi).
 
-	"rure is a C API to Rust's regex library, which guarantees linear time searching using finite automata. In
-	exchange, it must give up some common regex features such as backreferences and arbitrary lookaround. It does
-	however include capturing groups, lazy matching, Unicode support and word boundary assertions. Its matching
-	semantics generally correspond to Perl's, or "leftmost first." Namely, the match locations reported correspond to
-	the first match that would be found by a backtracking engine."
+"rure is a C API to Rust's regex library, which guarantees linear time searching using finite automata. In exchange, it
+must give up some common regex features such as backreferences and arbitrary lookaround. It does however include
+capturing groups, lazy matching, Unicode support and word boundary assertions. Its matching semantics generally
+correspond to Perl's, or "leftmost first." Namely, the match locations reported correspond to the first match that
+would be found by a backtracking engine."
 
 ## Why?
 
 Rust regex is one of the [fastest regex libraries](https://github.com/rust-leipzig/regex-performance/blob/master/results_20221012.png) judging by many independent benchmarks.
 Compared to the new Odin [text/regex](https://pkg.odin-lang.org/core/text/regex/) package it was 15x faster for a
 particular use case. The API is small, easy to use and easy to create bindings for. Additionally it's easy to (re)build
-the static libraries with the Rust `cargo` tooling, something that is often not true of larger CMAKE projects, even
+the static libraries with the Rust `cargo` tooling, something that is often not true of larger `CMAKE` projects, even
 with tools like `vcpkg`.
 
 ## Version
@@ -38,6 +38,17 @@ Prebuilt static `rure` libraries built against Rust regex version:
 match items properly). Rust regex is [clear that `UTF-8` is the only supported format for unicode](https://github.com/rust-lang/regex/tree/master/regex-capi#text-encoding) - you must translate
 other unicode formats such as `UTF-16` or `UTF-32`.
 
+## Automated binding generation (the odin code)
+
+The final `rure.odin` file is now generated from [odin-c-bindgen](https://github.com/karl-zylinski/odin-c-bindgen/).
+
+The input C source header file is [inputs/rure.h](./inputs/rure.h) and any custom code / foreign imports are in
+[inputs/prelude.odin](./inputs/prelude.odin). Assuming `bindgen.exe` is in your `PATH` just run the following to update
+`rure.odin`:
+
+> bindgen .
+
+
 ## Building the `rure` library (maybe optional)
 
 - The static library `rure.lib` for Windows is shipped with the bindings in `./lib`
@@ -49,7 +60,7 @@ other unicode formats such as `UTF-16` or `UTF-32`.
 	- See artifacts in `../target/release`, e.g. `rure.lib` on Windows and `librure.a` on Linux
 	- Copy artifacts to ``./lib`
 
-## Static library dependencies
+### Static library dependencies
 
 When building the rust regex C API we can check extra static libraries that must be linked. These are included in the
 Odin `foreign` definition for `rure`. You will get errors if they cannot be found on the system.

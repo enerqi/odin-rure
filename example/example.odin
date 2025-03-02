@@ -102,7 +102,7 @@ test_captures :: proc() -> bool {
 		passed = false
 	}
 
-	expect_capture_index: c.uint32_t = 2
+	expect_capture_index: i32 = 2
 	capture_index := rure.capture_name_index(re, "snowman")
 	if capture_index != expect_capture_index {
 		log.debugf(
