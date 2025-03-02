@@ -112,7 +112,7 @@ Match :: struct {
 	start: uint,
 
 	/* The end position. */
-	end: uint,
+	end:   uint,
 }
 
 /*
@@ -171,7 +171,7 @@ Iter_Capture_Names :: struct {
 Error :: struct {
 }
 
-@(default_calling_convention="c", link_prefix="rure_")
+@(default_calling_convention = "c", link_prefix = "rure_")
 foreign lib {
 	/*
 	* rure_compile_must compiles the given pattern into a regular expression. If

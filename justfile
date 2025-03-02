@@ -9,7 +9,7 @@ main_name := "example.exe"
 format:
     import os, subprocess
     for (root, _, files) in os.walk("."):
-        for filename in files:
+        for filename in [f for f in files if not os.path.dirname(os.path.join(root,f)).endswith("inputs")]:
             if filename.endswith(".odin"):
                 path = os.path.join(root, filename)
                 subprocess.check_call(f"odinfmt -w {path}", shell=True)
@@ -36,15 +36,21 @@ lint *args:
     -mkdir target/fastdebug
     -mkdir target/release
 
+# run bindgen to update rure.odin
+generate:
+	bindgen .
 
+# run example code
 run_debug *args: mktarget_dirs
 	odin run example -debug -microarch:native -show-timings -out:target/debug/{{main_name}} {{args}}
 
 alias run := run_debug
 
+# run fast debug example code
 run_fastdebug *args: mktarget_dirs
     odin run example -debug -o:speed -microarch:native -show-timings -out:target/fastdebug/{{main_name}} {{args}}
 
+# run release example code
 run_release *args: mktarget_dirs
     odin run example -o:speed -microarch:native -show-timings -out:target/release/{{main_name}} {{args}}
 
