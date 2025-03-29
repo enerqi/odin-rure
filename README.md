@@ -22,7 +22,7 @@ with tools like `vcpkg`.
 
 Prebuilt static `rure` libraries built against Rust regex version:
 
-- Linux: `1.10.6`
+- Linux: `1.11.1`
 - Windows: `1.11.1`
 
 ## API structure
