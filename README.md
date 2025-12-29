@@ -18,12 +18,12 @@ with tools like `vcpkg`.
 
 ## Version
 
-- `rure = "0.2.2"` which provides the C interface to Rust `regex = 1.*`
+Prebuilt static `rure` libraries are built against Rust regex version:
 
-Prebuilt static `rure` libraries built against Rust regex version:
+| odin-rure tag | rure-capi version | prebuilt rust regex lib version |
+| 2025-12       | 0.2.4             | 1.12.2                          |
+| 2025-03       | 0.2.2             | 1.11.1                          |
 
-- Linux: `1.11.1`
-- Windows: `1.11.1`
 
 ## API structure
 
