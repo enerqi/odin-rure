@@ -53,16 +53,14 @@ package_name = "rure"
 
 // "Old_Name" = "New_Name",
 // Adapting C types to typical Odin type naming conventions
-rename_types = {
-	"rure" = "Rure",
-	"set" = "Set",
-	"options" = "Options",
-	"match" = "Match",
-	"captures" = "Captures",
-	"iter" = "Iter",
-	"iter_capture_names" = "Iter_Capture_Names",
-	"error" = "Error"
+rename = {
+	// used `force_ada_case_types` instead of manual renames
+	//"rure" = "Rure",
+	//"rure_set" = "Set",
+	// ...
 }
+
+force_ada_case_types = true
 
 // Turns an enum into a bit_set. Converts the values of the enum into
 // appropriate values for a bit_set. Creates a bit_set type that uses the enum.
@@ -87,29 +85,29 @@ struct_field_overrides = {
 // use the key Proc_Name.parameter_name. For a return value use the key Proc_Name.
 // Note that a plain `[^]` and `#by_ptr` can be used to modify the existing type.
 procedure_type_overrides = {
-	"compile.pattern" = "PATTERN_TEXT_P"
-	"compile.flags" = "Compile_Flags"
-	"compile.options" = "^Options = nil"
-	"compile.error" = "^Error = nil"
+	"rure_compile.pattern" = "PATTERN_TEXT_P"
+	"rure_compile.flags" = "Compile_Flags"
+	"rure_compile.options" = "^Options = nil"
+	"rure_compile.error" = "^Error = nil"
 
-	"is_match.haystack" = "HAYSTACK_TEXT_P"
+	"rure_is_match.haystack" = "HAYSTACK_TEXT_P"
 
-	"find.haystack" = "HAYSTACK_TEXT_P"
-	"find_captures.haystack" = "HAYSTACK_TEXT_P"
+	"rure_find.haystack" = "HAYSTACK_TEXT_P"
+	"rure_find_captures.haystack" = "HAYSTACK_TEXT_P"
 
-	"shortest_match.haystack" = "HAYSTACK_TEXT_P"
+	"rure_shortest_match.haystack" = "HAYSTACK_TEXT_P"
 
-	"iter_next.haystack" = "HAYSTACK_TEXT_P"
-	"iter_next_captures.haystack" = "HAYSTACK_TEXT_P"
+	"rure_iter_next.haystack" = "HAYSTACK_TEXT_P"
+	"rure_iter_next_captures.haystack" = "HAYSTACK_TEXT_P"
 
-	"compile_set.patterns" = "[^]PATTERN_TEXT_P"
-	"compile_set.patterns_lengths" = "[^]"
-	"compile_set.flags" = "Compile_Flags"
-	"compile_set.options" = "^Options = nil"
-	"compile_set.error" = "^Error = nil"
+	"rure_compile_set.patterns" = "[^]PATTERN_TEXT_P"
+	"rure_compile_set.patterns_lengths" = "[^]"
+	"rure_compile_set.flags" = "Compile_Flags"
+	"rure_compile_set.options" = "^Options = nil"
+	"rure_compile_set.error" = "^Error = nil"
 
-	"set_is_match.haystack" = "HAYSTACK_TEXT_P"
-	"set_matches.haystack" = "HAYSTACK_TEXT_P"
+	"rure_set_is_match.haystack" = "HAYSTACK_TEXT_P"
+	"rure_set_matches.haystack" = "HAYSTACK_TEXT_P"
 }
 
 // Inject a new type before another type. Use `rename_types` to just rename

@@ -2,8 +2,6 @@ package rure
 
 import "core:c"
 
-_ :: c
-
 when ODIN_OS == .Windows {
 	// regex\regex-capi ❯ cargo rustc -q -- --print=native-static-libs
 	// note: Link against the following native artifacts when linking against this static library. The order and any
@@ -81,16 +79,14 @@ pattern_ref :: #force_inline proc(s: string) -> PATTERN_TEXT_P {
 *
 * An rure can be safely used from multiple threads simultaneously.
 */
-Rure :: struct {
-}
+Rure :: struct {}
 
 /*
 * rure_set is the type of a set of compiled regular expressions.
 *
 * A rure can be safely used from multiple threads simultaneously.
 */
-Set :: struct {
-}
+Set :: struct {}
 
 /*
 * rure_options is the set of non-flag configuration options for compiling
@@ -101,18 +97,44 @@ Set :: struct {
 * For most uses, the default settings will work fine, and NULL can be passed
 * wherever a *rure_options is expected.
 */
-Options :: struct {
-}
+Options :: struct {}
+
+/*
+* The flags listed below can be used in rure_compile to set the default
+* flags. All flags can otherwise be toggled in the expression itself using
+* standard syntax, e.g., `(?i)` turns case insensitive matching on and `(?-i)`
+* disables it.
+*/
+/* The case insensitive (i) flag. */
+RURE_FLAG_CASEI :: (1<<0)
+
+/* The multi-line matching (m) flag. (^ and $ match new line boundaries.) */
+RURE_FLAG_MULTI :: (1<<1)
+
+/* The any character (s) flag. (. matches new line.) */
+RURE_FLAG_DOTNL :: (1<<2)
+
+/* The greedy swap (U) flag. (e.g., + is ungreedy and +? is greedy.) */
+RURE_FLAG_SWAP_GREED :: (1<<3)
+
+/* The ignore whitespace (x) flag. */
+RURE_FLAG_SPACE :: (1<<4)
+
+/* The Unicode (u) flag. */
+RURE_FLAG_UNICODE :: (1<<5)
+
+/* The default set of flags enabled when no flags are set. */
+RURE_DEFAULT_FLAGS :: RURE_FLAG_UNICODE
 
 /*
 * rure_match corresponds to the location of a single match in a haystack.
 */
 Match :: struct {
 	/* The start position. */
-	start: uint,
+	start: c.size_t,
 
 	/* The end position. */
-	end:   uint,
+	end: c.size_t,
 }
 
 /*
@@ -130,8 +152,7 @@ Match :: struct {
 *
 * It is not safe to use from multiple threads simultaneously.
 */
-Captures :: struct {
-}
+Captures :: struct {}
 
 /*
 * rure_iter is an iterator over successive non-overlapping matches in a
@@ -142,8 +163,7 @@ Captures :: struct {
 *
 * It is not safe to use from multiple threads simultaneously.
 */
-Iter :: struct {
-}
+Iter :: struct {}
 
 /*
 * rure_iter_capture_names is an iterator over the list of capture group names
@@ -154,8 +174,7 @@ Iter :: struct {
 *
 * It is not safe to use from multiple threads simultaneously.
 */
-Iter_Capture_Names :: struct {
-}
+Iter_Capture_Names :: struct {}
 
 /*
 * rure_error is an error that caused compilation to fail.
@@ -168,10 +187,9 @@ Iter_Capture_Names :: struct {
 *
 * It is not safe to use from multiple threads simultaneously.
 */
-Error :: struct {
-}
+Error :: struct {}
 
-@(default_calling_convention = "c", link_prefix = "rure_")
+@(default_calling_convention="c", link_prefix="rure_")
 foreign lib {
 	/*
 	* rure_compile_must compiles the given pattern into a regular expression. If
@@ -209,7 +227,7 @@ foreign lib {
 	* The compiled expression returned may be used from multiple threads
 	* simultaneously.
 	*/
-	compile :: proc(pattern: PATTERN_TEXT_P, length: uint, flags: Compile_Flags, options: ^Options = nil, error: ^Error = nil) -> ^Rure ---
+	compile :: proc(pattern: PATTERN_TEXT_P, length: c.size_t, flags: Compile_Flags, options: ^Options = nil, error: ^Error = nil) -> ^Rure ---
 
 	/*
 	* rure_free frees the given compiled regular expression.
@@ -236,7 +254,7 @@ foreign lib {
 	* N.B. The performance of this search is not impacted by the presence of
 	* capturing groups in your regular expression.
 	*/
-	is_match :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: uint, start: uint) -> bool ---
+	is_match :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t) -> bool ---
 
 	/*
 	* rure_find returns true if and only if re matches anywhere in haystack.
@@ -258,7 +276,7 @@ foreign lib {
 	* N.B. The performance of this search is not impacted by the presence of
 	* capturing groups in your regular expression.
 	*/
-	find :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: uint, start: uint, match: ^Match) -> bool ---
+	find :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t, match: ^Match) -> bool ---
 
 	/*
 	* rure_find_captures returns true if and only if re matches anywhere in
@@ -285,7 +303,7 @@ foreign lib {
 	* capturing groups. If you're using this function, it may be beneficial to
 	* use non-capturing groups (e.g., `(?:re)`) where possible.
 	*/
-	find_captures :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: uint, start: uint, captures: ^Captures) -> bool ---
+	find_captures :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t, captures: ^Captures) -> bool ---
 
 	/*
 	* rure_shortest_match returns true if and only if re matches anywhere in
@@ -309,7 +327,7 @@ foreign lib {
 	* N.B. The performance of this search is not impacted by the presence of
 	* capturing groups in your regular expression.
 	*/
-	shortest_match :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: uint, start: uint, end: ^uint) -> bool ---
+	shortest_match :: proc(re: ^Rure, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t, end: ^c.size_t) -> bool ---
 
 	/*
 	* rure_capture_name_index returns the capture index for the name given. If
@@ -342,7 +360,7 @@ foreign lib {
 	*
 	* The value of the capture group name is written to the provided pointer.
 	*/
-	iter_capture_names_next :: proc(it: ^Iter_Capture_Names, name: ^^u8) -> bool ---
+	iter_capture_names_next :: proc(it: ^Iter_Capture_Names, name: ^cstring) -> bool ---
 
 	/*
 	* rure_iter_new creates a new iterator.
@@ -379,7 +397,7 @@ foreign lib {
 	* N.B. The performance of this search is not impacted by the presence of
 	* capturing groups in your regular expression.
 	*/
-	iter_next :: proc(it: ^Iter, haystack: HAYSTACK_TEXT_P, length: uint, match: ^Match) -> bool ---
+	iter_next :: proc(it: ^Iter, haystack: HAYSTACK_TEXT_P, length: c.size_t, match: ^Match) -> bool ---
 
 	/*
 	* rure_iter_next_captures advances the iterator and returns true if and only if a
@@ -403,7 +421,7 @@ foreign lib {
 	* capturing groups. If you're using this function, it may be beneficial to
 	* use non-capturing groups (e.g., `(?:re)`) where possible.
 	*/
-	iter_next_captures :: proc(it: ^Iter, haystack: HAYSTACK_TEXT_P, length: uint, captures: ^Captures) -> bool ---
+	iter_next_captures :: proc(it: ^Iter, haystack: HAYSTACK_TEXT_P, length: c.size_t, captures: ^Captures) -> bool ---
 
 	/*
 	* rure_captures_new allocates storage for all capturing groups in re.
@@ -437,13 +455,13 @@ foreign lib {
 	*
 	* Note that index 0 corresponds to the full match.
 	*/
-	captures_at :: proc(captures: ^Captures, i: uint, match: ^Match) -> bool ---
+	captures_at :: proc(captures: ^Captures, i: c.size_t, match: ^Match) -> bool ---
 
 	/*
 	* rure_captures_len returns the number of capturing groups in the given
 	* captures.
 	*/
-	captures_len :: proc(captures: ^Captures) -> uint ---
+	captures_len :: proc(captures: ^Captures) -> c.size_t ---
 
 	/*
 	* rure_options_new allocates space for options.
@@ -472,7 +490,7 @@ foreign lib {
 	* single compiled program. If the program would exceed this number, then a
 	* compilation error will be returned from rure_compile.
 	*/
-	options_size_limit :: proc(options: ^Options, limit: uint) ---
+	options_size_limit :: proc(options: ^Options, limit: c.size_t) ---
 
 	/*
 	* rure_options_dfa_size_limit sets the approximate size of the cache used by
@@ -486,7 +504,7 @@ foreign lib {
 	* simultaneously, then each thread may use up to the number of bytes
 	* specified here.
 	*/
-	options_dfa_size_limit :: proc(options: ^Options, limit: uint) ---
+	options_dfa_size_limit :: proc(options: ^Options, limit: c.size_t) ---
 
 	/*
 	* rure_compile_set compiles the given list of patterns into a single regular
@@ -508,7 +526,7 @@ foreign lib {
 	*
 	* The compiled expression set returned may be used from multiple threads.
 	*/
-	compile_set :: proc(patterns: [^]PATTERN_TEXT_P, patterns_lengths: [^]uint, patterns_count: uint, flags: Compile_Flags, options: ^Options = nil, error: ^Error = nil) -> ^Set ---
+	compile_set :: proc(patterns: [^]PATTERN_TEXT_P, patterns_lengths: [^]c.size_t, patterns_count: c.size_t, flags: Compile_Flags, options: ^Options = nil, error: ^Error = nil) -> ^Set ---
 
 	/*
 	* rure_set_free frees the given compiled regular expression set.
@@ -532,7 +550,7 @@ foreign lib {
 	* information. For example, if the start position is greater than 0, then the
 	* \A ("begin text") anchor can never match.
 	*/
-	set_is_match :: proc(re: ^Set, haystack: HAYSTACK_TEXT_P, length: uint, start: uint) -> bool ---
+	set_is_match :: proc(re: ^Set, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t) -> bool ---
 
 	/*
 	* rure_set_matches compares each regex in the set against the haystack and
@@ -558,12 +576,12 @@ foreign lib {
 	* matched within the set. To determine if any of the regexes matched without
 	* caring which, use rure_set_is_match.
 	*/
-	set_matches :: proc(re: ^Set, haystack: HAYSTACK_TEXT_P, length: uint, start: uint, matches: ^bool) -> bool ---
+	set_matches :: proc(re: ^Set, haystack: HAYSTACK_TEXT_P, length: c.size_t, start: c.size_t, matches: ^bool) -> bool ---
 
 	/*
 	* rure_set_len returns the number of patterns rure_set was compiled with.
 	*/
-	set_len :: proc(re: ^Set) -> uint ---
+	set_len :: proc(re: ^Set) -> c.size_t ---
 
 	/*
 	* rure_error_new allocates space for an error.
@@ -618,3 +636,4 @@ foreign lib {
 	*/
 	cstring_free :: proc(s: cstring) ---
 }
+
