@@ -106,22 +106,22 @@ Options :: struct {}
 * disables it.
 */
 /* The case insensitive (i) flag. */
-RURE_FLAG_CASEI :: (1<<0)
+RURE_FLAG_CASEI :: (1 << 0)
 
 /* The multi-line matching (m) flag. (^ and $ match new line boundaries.) */
-RURE_FLAG_MULTI :: (1<<1)
+RURE_FLAG_MULTI :: (1 << 1)
 
 /* The any character (s) flag. (. matches new line.) */
-RURE_FLAG_DOTNL :: (1<<2)
+RURE_FLAG_DOTNL :: (1 << 2)
 
 /* The greedy swap (U) flag. (e.g., + is ungreedy and +? is greedy.) */
-RURE_FLAG_SWAP_GREED :: (1<<3)
+RURE_FLAG_SWAP_GREED :: (1 << 3)
 
 /* The ignore whitespace (x) flag. */
-RURE_FLAG_SPACE :: (1<<4)
+RURE_FLAG_SPACE :: (1 << 4)
 
 /* The Unicode (u) flag. */
-RURE_FLAG_UNICODE :: (1<<5)
+RURE_FLAG_UNICODE :: (1 << 5)
 
 /* The default set of flags enabled when no flags are set. */
 RURE_DEFAULT_FLAGS :: RURE_FLAG_UNICODE
@@ -134,7 +134,7 @@ Match :: struct {
 	start: c.size_t,
 
 	/* The end position. */
-	end: c.size_t,
+	end:   c.size_t,
 }
 
 /*
@@ -189,7 +189,7 @@ Iter_Capture_Names :: struct {}
 */
 Error :: struct {}
 
-@(default_calling_convention="c", link_prefix="rure_")
+@(default_calling_convention = "c", link_prefix = "rure_")
 foreign lib {
 	/*
 	* rure_compile_must compiles the given pattern into a regular expression. If
@@ -636,4 +636,3 @@ foreign lib {
 	*/
 	cstring_free :: proc(s: cstring) ---
 }
-

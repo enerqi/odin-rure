@@ -1,5 +1,33 @@
-* text=auto
+# LF everywhere, in the index AND in the working directory, on every platform. This matches the Odin
+# project's own .editorconfig, which declares `end_of_line = lf` despite Odin being developed mainly on
+# Windows.
+#
+# `text=auto` alone - which is all this file used to say - only guarantees LF in the *index*; what lands
+# in the working directory is then left to each developer's `core.autocrlf`, which Git for Windows sets
+# to `true` in its system config. That gives Windows checkouts CRLF files while .editorconfig
+# (end_of_line = lf) and the tools that rewrite files in place - odinfmt above all - emit LF, so a
+# formatting pass leaves a file with mixed endings and Git reports "<line-endings changed since
+# checkout>". Adding `eol=lf` pins the working directory too and overrides core.autocrlf, so the whole
+# toolchain agrees. Odin, just, cmd and Sublime all read LF happily on Windows.
+#
+# Keep this in sync with .editorconfig's `end_of_line` and odinfmt.json's `newline_style`.
+* text=auto eol=lf
 
-# These files must always have *nix line-endings
-Makefile text eol=lf
-*.sh text eol=lf
+# Windows-only scripts are the exception: some interpreters need CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Never touch the contents of these - the `* text=auto eol=lf` above would otherwise corrupt one that
+# is committed deliberately or force-added, and this project ships a prebuilt rure.lib / librure.a.
+*.exe binary
+*.pdb binary
+*.lib binary
+*.dll binary
+*.obj binary
+*.o binary
+*.so binary
+*.dylib binary
+*.a binary
+*.bc binary
+*.spall binary
