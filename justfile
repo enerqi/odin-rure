@@ -4,11 +4,23 @@
 # than either: on every Windows and on GitHub's windows runners, no install, and no profile to make a
 # recipe unreproducible. The cost is that it is a poor language for a multi-line recipe and does not
 # understand POSIX single-quoting - so every recipe below with logic or quoted arguments (the cargo
-# ones) uses `[script("python")]`, which builds an argv list and spawns no shell at all.
+# ones) uses `[script]`, which builds an argv list and spawns no shell at all.
 set windows-shell := ["cmd.exe", "/c"]
 set shell := ["bash", "-c"]
-set unstable  # [script("python")] feature - https://github.com/casey/just/issues/1479
+set unstable  # [script] feature - https://github.com/casey/just/issues/1479
 set lazy
+
+# `python` alone is not a reliable cross-platform lookup: scoop (Windows) installs whatever version was
+# last `scoop install`ed under the bare name `python`, with no version pin, and a bare `python3`/`python`
+# on Linux is whatever the distro shipped. `uv run -p 3.14 python` sidesteps both - uv resolves (and
+# downloads if missing) the newest 3.14 patch it knows of, the same on every platform, so uv becomes the
+# one tool these recipes depend on instead of a system python. `--no-project`: without it, `uv run` walks
+# up from cwd looking for a pyproject.toml/uv.toml to treat as the project root - none exists above this
+# repo today, but if one ever did (e.g. a stray python project two directories up), these recipes would
+# silently start syncing/using *that* project's venv and pinned version instead of the one below.
+# `--no-project` disables that discovery so the version here is the only one that applies. Recipes opt in
+# with the bare `[script]` attribute (no interpreter argument) to pick this up.
+set script-interpreter := ["uv", "run", "--no-project", "-p", "3.14", "python"]
 
 # Set by the newest just feature used below - user-defined functions (1.49), for `target_path`.
 # Older features also needed: `join()` 1.37, `set lazy` 1.47. Without this an old just reports a plain
@@ -106,7 +118,7 @@ generate:
 # ---
 # (re)build Windows rure.lib with CRT-match + perf flags; arg = regex-capi dir
 [windows]
-[script("python")]
+[script]
 build_rure regex_capi_dir:
 	import subprocess, sys
 	d = r"{{regex_capi_dir}}"
@@ -127,7 +139,7 @@ build_rure regex_capi_dir:
 # ---
 # print native static libs to link against rure.lib; arg = regex-capi dir
 [windows]
-[script("python")]
+[script]
 rure_native_libs regex_capi_dir:
 	import subprocess
 	d = r"{{regex_capi_dir}}"
@@ -148,7 +160,7 @@ rure_native_libs regex_capi_dir:
 # ---
 # (re)build Linux librure.a with perf flags; arg = regex-capi dir
 [linux]
-[script("python")]
+[script]
 build_rure regex_capi_dir:
 	import subprocess
 	d = r"{{regex_capi_dir}}"
@@ -164,7 +176,7 @@ build_rure regex_capi_dir:
 
 # print native static libs to link against librure.a; arg = regex-capi dir
 [linux]
-[script("python")]
+[script]
 rure_native_libs regex_capi_dir:
 	import subprocess
 	raise SystemExit(subprocess.run([
